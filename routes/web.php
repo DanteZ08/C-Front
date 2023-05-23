@@ -38,7 +38,7 @@ Route::middleware('throttle:100,60')->group(function () {
     })->name('register');
 
 
-    Route::post('user_login', [CustomerController::class, 'CustomerLogin'])->name('cust_login');
-    Route::post('user_register', [CustomerController::class, 'CustomerRegister'])->name('cust_register');
+    Route::post('user_login', [CustomerController::class, 'customerLogin'])->name('cust_login');
+    Route::post('user_register', [CustomerController::class, 'customerRegister'])->name('cust_register');
 
 });

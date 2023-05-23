@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class CustomerController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function CustomerLogin(Request $request){
+    public function customerLogin(Request $request){
 
         $this->validate($request, [
             'email' => 'required',
@@ -35,7 +36,7 @@ class CustomerController extends BaseController
 
     }
 
-    public function CustomerRegister(Request $request){
+    public function customerRegister(Request $request){
 
         $this->validate($request, [
             'name' => 'required',
