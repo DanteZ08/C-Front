@@ -13,7 +13,7 @@ class Appointment extends Model
 
 
     protected $fillable = [
-        'appointmentUID',
+        'UID',
         'customerUID',
         'consultantUID',
         'startDate',

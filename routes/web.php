@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CustomerController;
 use App\Models\Consultant;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::middleware('throttle:100,60')->group(function () {
+Route::middleware('throttle:1000,60')->group(function () {
 
     Route::get('/', function () {
         $consultants = Consultant::get();
@@ -41,4 +42,6 @@ Route::middleware('throttle:100,60')->group(function () {
     Route::post('user_login', [CustomerController::class, 'customerLogin'])->name('cust_login');
     Route::post('user_register', [CustomerController::class, 'customerRegister'])->name('cust_register');
 
+
+    Route::get('user', [AppointmentController::class, 'createAppointment'])->name('test');
 });
