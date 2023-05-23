@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Models\Consultant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('throttle:100,60')->group(function () {
 
     Route::get('/', function () {
-        return view('pages.index');
+        $consultants = Consultant::get();
+        return view('pages.index', compact('consultants'));
     });
 
     Route::get('logout', function () {
