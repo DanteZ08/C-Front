@@ -21,13 +21,26 @@
                 <p class="login-box-msg">Register an account to start your session</p>
                 @if(session('result'))
 
-                <div class="card bg-{{ session('result.0') }}">
-                    <div class="card-body">
-                        {{ session('result.1') }}
+                    <div class="card bg-{{ session('result.0') }}">
+                        <div class="card-body">
+                            {{ session('result.1') }}
+                        </div>
                     </div>
-                </div>
-                <br>
                 @endif
+
+                @if (count($errors) > 0)
+                    <div class="card bg-danger">
+                        <div class="card-body">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+                <br>
+
                 <form action="{{route('cust_register')}}" method="post">
                     @csrf
                     <div class="input-group mb-3">
