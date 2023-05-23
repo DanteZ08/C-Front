@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,7 +14,28 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware('throttle:100,60')->group(function () {
 
-Route::get('/', function () {
-    return view('pages.index');
+    Route::get('/', function () {
+        return view('pages.index');
+    });
+
+    Route::get('logout', function () {
+        Auth::logout();
+        return Redirect::route('login');
+    })->name('logout');
+
+
+    Route::get('/login', function () {
+        return view('pages.login');
+    })->name('login');
+
+    Route::get('/register', function () {
+        return view('pages.register');
+    })->name('register');
+
+
+    Route::post('user_login', [CustomerController::class, 'CustomerLogin'])->name('cust_login');
+    Route::post('user_register', [CustomerController::class, 'CustomerRegister'])->name('cust_register');
+
 });
