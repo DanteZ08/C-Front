@@ -28,26 +28,16 @@ Route::get('/login', function () {
     return view('pages.login');
 })->name('login');
 
+Route::get('/register', function () {
+    return view('pages.register');
+})->name('register');
+
 Route::post('user_login', [CustomerController::class, 'customerLogin'])->name('cust_login');
 Route::post('user_register', [CustomerController::class, 'customerRegister'])->name('cust_register');
 
 Route::middleware(['throttle:100,60', 'auth'])->group(function () {
-
     Route::get('/', function () {
         $consultants = Consultant::get();
         return view('pages.index', compact('consultants'));
     })->name('index');
-
-    
-
-    Route::get('/register', function () {
-        return view('pages.register');
-    })->name('register');
-
-
-    
-
-
-    
-    
 });
