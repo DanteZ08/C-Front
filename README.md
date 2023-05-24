@@ -3,6 +3,10 @@
 
 Customer dashboard
 
+## Test Account:
+
+- To access the dashboard, you need to go to ```[URl]/register``` to create an account
+and then ```[URL]/login``` to login
 
 ## Features
 
