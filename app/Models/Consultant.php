@@ -18,7 +18,8 @@ class Consultant extends Authenticatable
         'name',
         'email',
         'password',
-        'image'
+        'image',
+        'status'
     ];
 
 

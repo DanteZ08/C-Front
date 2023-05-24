@@ -17,31 +17,37 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::middleware('throttle:1000,60')->group(function () {
+
+Route::get('logout', function () {
+    Auth::logout();
+    return Redirect::route('login');
+})->name('logout');
+
+
+Route::get('/login', function () {
+    return view('pages.login');
+})->name('login');
+
+Route::post('user_login', [CustomerController::class, 'customerLogin'])->name('cust_login');
+Route::post('user_register', [CustomerController::class, 'customerRegister'])->name('cust_register');
+
+Route::middleware(['throttle:100,60', 'auth'])->group(function () {
 
     Route::get('/', function () {
         $consultants = Consultant::get();
         return view('pages.index', compact('consultants'));
-    });
+    })->name('index');
 
-    Route::get('logout', function () {
-        Auth::logout();
-        return Redirect::route('login');
-    })->name('logout');
-
-
-    Route::get('/login', function () {
-        return view('pages.login');
-    })->name('login');
+    
 
     Route::get('/register', function () {
         return view('pages.register');
     })->name('register');
 
 
-    Route::post('user_login', [CustomerController::class, 'customerLogin'])->name('cust_login');
-    Route::post('user_register', [CustomerController::class, 'customerRegister'])->name('cust_register');
+    
 
 
-    Route::get('user', [AppointmentController::class, 'createAppointment'])->name('test');
+    
+    
 });

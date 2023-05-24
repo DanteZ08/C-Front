@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Consultant;
 use DateInterval;
 use DateTime;
 use Illuminate\Http\Request;
@@ -26,12 +27,12 @@ class AppointmentController extends BaseController
 
     public function checkAvailability($date){
         $time = $date->format('H:i');
-        $startM= '08:00';
+        $startM= '9:00';
         $stopM = '13:00';
 
-        $startN = '15:01';
-        $stopN = '21:00';
-
+        $startN = '15:30';
+        $stopN = '22:00';
+        
         return ($time >= $startM && $time < $stopM || $time >= $startN && $time < $stopN);
     }
 
@@ -50,21 +51,42 @@ class AppointmentController extends BaseController
         return $this->checkOtherAppointmentsDate($nextStart, $nextEnd);
     }
 
-    public function checkOtherAppointmentsDate($start, $stop){
-        $appointments = DB::table('appointments')->where('consultantUID', $this->consultant->UID)->get();
-        foreach($appointments as $app){
-            $aStart = $app->startDate;
-            $aStop = $app->endDate;
-            if(($start >= $aStart && $start < $aStop) || ($stop > $aStart && $stop <= $aStop)){
+    public function APIcalculate30M(Request $request) {
+        if ($request->ajax() || $request->wantsJson()) {
+            $dateString = $request->input('date');
+            
+            $date = substr($dateString, 0, strrpos($dateString, 'GMT') - 1);
+            
+            $nextStart = new DateTime($date);
+            $nextStart->add(new DateInterval('PT30M'));
+    
+            $nextEnd = $this->calculate1H($nextStart);
+            //dd($nextStart);
+            return response()->json($this->checkOtherAppointmentsDate($nextStart, $nextEnd, $request->input('user')));
+        }
+    }
+    
+
+    public function checkOtherAppointmentsDate($start, $stop, $user = null) {
+        if ($user === null) {
+            $user = $this->consultant;
+        }
+        
+        $appointments = Appointment::where('consultantUID', $user)->get();
+        foreach ($appointments as $app) {
+            $aStart = new \DateTime($app->startDate);
+            $aStop = new \DateTime($app->endDate);
+            
+            if (($start >= $aStart && $start < $aStop) || ($stop > $aStart && $stop <= $aStop)) {
                 return true;
             }
         }
-        
+        return false;
     }
 
     public function createAppointment(Request $request) {
-        $this->consultant = $request->input('UID');
-        $currentDate = new DateTime();
+        $this->consultant = $request->input('consultant');
+        $currentDate = new DateTime($request->input('date'));
     
         if ($this->mondayToFriday($currentDate))
             return 0;
@@ -86,12 +108,13 @@ class AppointmentController extends BaseController
         
         Appointment::create([
             'UID' => generateUniqueMongoId('appointments'),
-            'customerUID' => $this->consultant ,
-            'consultantUID' => user()->UID,
+            'customerUID' =>  $request->input('customer'),
+            'consultantUID' => $this->consultant,
             'startDate' => $appointmentStart->format('Y-m-d H:i'),
             'endDate' => $this->calculate1H($appointmentStart)->format('Y-m-d H:i'),
             'status' => false
         ]);
+        Consultant::where('UID', $this->consultant)->update(['status' => 1]);
         return 4;
     }
     
