@@ -23,6 +23,5 @@
 <!-- summernote -->
 <link rel="stylesheet" href="{{asset('assets/plugins/summernote/summernote-bs4.min.css')}}">
 <link rel="stylesheet" href="{{asset('assets/plugins/fullcalendar/main.css')}}">
-
-
+<link rel="stylesheet" href="{{asset('assets/plugins/toastr/toastr.min.css')}}">
 

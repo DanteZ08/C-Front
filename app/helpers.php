@@ -3,7 +3,21 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-if(!function_exists('generageMongoId')){
+
+/** Both funcs are used to create an UniqueIdentifier
+ * Similar to the MongoDB's id format 
+ * Great for confusing attackers when using ID's as identifiers in URL's
+ * "Hey look they use MongoDB as database", jokes on them, It's MySQL
+ * But also for managing the data
+ * 
+ * generateUniqueMongoId is recursive, using the actual ID generator (generateMongoId)
+ * then checks if that id is existing in a said table, if so
+ * it calls itself again
+ * 
+ * (i know in this case it's virtually impossible to get the same ID twice)
+ * 
+ */
+if(!function_exists('generateMongoId')){
 
     function generateMongoId() {
         $timestamp = dechex(strtotime(date('Y-m-d H:i:s')));
@@ -15,7 +29,7 @@ if(!function_exists('generageMongoId')){
     }
 
 }
-if(!function_exists('generageMongoId')){
+if(!function_exists('generateUniqueMongoId')){
 
     function generateUniqueMongoId($table) {
         $id = generateMongoId();
@@ -33,6 +47,7 @@ if(!function_exists('generageMongoId')){
 
 }
 
+/**Helper function to avoid writing 'Auth::' when fetching info about the logged user */
 if(!function_exists('user')){
     function user(){
         return Auth::user();

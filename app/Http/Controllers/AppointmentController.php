@@ -8,23 +8,18 @@ use DateInterval;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends BaseController
 {
     protected $consultant;
-   
 
 
-    public function endAppointment(){
-        
-    }
-
-
+    /**Checks if current day is not in weekend */
     public function mondayToFriday($date){
         return ($date->format('N') >= 6);
     }
 
+    /**Checks if current hour falls into consultant schedule */
     public function checkAvailability($date){
         $time = $date->format('H:i');
         $startM= '9:00';
@@ -36,12 +31,14 @@ class AppointmentController extends BaseController
         return ($time >= $startM && $time < $stopM || $time >= $startN && $time < $stopN);
     }
 
+    /**Calculates the appointment duration 1 hour */
     public function calculate1H($date){
         $nextEnd = clone $date;
         $nextEnd->add(new DateInterval('PT1H'));
         return $nextEnd;
     }
 
+    /**Calculates the break between appointments 30M */
     public function calculate30M($date) {
         $nextStart = clone $date;
         $nextStart->add(new DateInterval('PT30M'));
@@ -51,6 +48,7 @@ class AppointmentController extends BaseController
         return $this->checkOtherAppointmentsDate($nextStart, $nextEnd);
     }
 
+    /**Proxy func of calculate30M made for API routes so that it accepts Request params () */
     public function APIcalculate30M(Request $request) {
         if ($request->ajax() || $request->wantsJson()) {
             $dateString = $request->input('date');
@@ -66,7 +64,7 @@ class AppointmentController extends BaseController
         }
     }
     
-
+    /**Checks every appointment linked to a consultant  */
     public function checkOtherAppointmentsDate($start, $stop, $user = null) {
         if ($user === null) {
             $user = $this->consultant;
@@ -81,9 +79,9 @@ class AppointmentController extends BaseController
                 return true;
             }
         }
-        return false;
     }
 
+    /**Creates appointment and checks every requirement, returning ints for switching through results */
     public function createAppointment(Request $request) {
         $this->consultant = $request->input('consultant');
         $currentDate = new DateTime($request->input('date'));
@@ -100,11 +98,10 @@ class AppointmentController extends BaseController
         if ($this->checkOtherAppointmentsDate($appointmentStart, $appointmentEnd))
             return 2;
     
-        if ($this->calculate30M($appointmentStart))
+        if ($this->calculate30M($appointmentEnd))
             return 3;
 
 
-        //dd($appointmentStart->format('Y-m-d H:i') . " / " . $appointmentEnd->format('Y-m-d H:i'));
         
         Appointment::create([
             'UID' => generateUniqueMongoId('appointments'),

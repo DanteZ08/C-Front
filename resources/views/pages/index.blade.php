@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -28,6 +29,7 @@
             <div class="card-body pb-0">
                 <div class="row">
                     @foreach($consultants as $c)
+                   
                     <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
                         <div class="card bg-light d-flex flex-fill">
                             <div class="card-header text-muted border-bottom-0">
@@ -47,31 +49,22 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                    @csrf
-                                    <div class="text-right">
-                                        @if($c->status)
-                                            <button disabled class="btn btn-sm btn-danger">
-                                                <i class="fas fa-user"></i> Consultant is not available
-                                            </button>
-                                        @else
-                                        
-                                            <div class="form-group">
-                                                <select  class="form-control select2" style="width: 100%;">
-                                                    <option selected="selected">Alabama</option>
-                                                    <option>Alaska</option>
-                                                    <option>California</option>
-                                                    <option>Delaware</option>
-                                                    <option>Tennessee</option>
-                                                    <option>Texas</option>
-                                                    <option>Washington</option>
-                                                </select>
-                                            </div>
-                                            <br>
-                                            <button onclick="createAppointment('{{$c->UID}}')" class="btn btn-sm btn-success">
-                                                <i class="fas fa-user"></i> Create an appointment
-                                            </button>
-                                        @endif
-                                    </div>
+                                @csrf
+                                <div class="text-right">
+                                    @if($c->status)
+                                    <button disabled class="btn btn-sm btn-danger">
+                                        <i class="fas fa-user"></i> Consultant is not available
+                                    </button>
+                                    @else
+                                    
+                                    <br>
+
+                                    <button onclick="createAppointment('{{$c->UID}}')" id="appointmentCreate-{{$c->UID}}" class="btn btn-sm btn-success">
+                                        <i class="fas fa-user"></i> Create an appointment
+                                    </button>
+
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,6 +81,5 @@
     </section>
     <!-- /.content -->
 </div>
-
 
 @stop
